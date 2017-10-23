@@ -1,0 +1,134 @@
+digraph G {
+
+27 [label=root]
+
+1 [label = "1:8(12)"shape=diamond color=yellow style=filled]
+
+2 [label = "2:1(2)"color=yellow style=filled]
+
+3 [label = "3:2(1)"color=yellow style=filled]
+
+4 [label = "4:1(3)"color=royalblue style=filled]
+
+5 [label = "5:1(3)"color=yellow style=filled]
+
+6 [label = "6:1(2)"color=green style=filled]
+
+7 [label = "7:1(4)"color=royalblue style=filled]
+
+8 [label = "8:2(1)"color=violet style=filled]
+
+9 [label = "9:6(5)"color=yellow style=filled]
+
+10 [label = "10:18(1)"shape=diamond color=red style=filled]
+
+11 [label = "11:5(1)"color=yellow style=filled]
+
+12 [label = "12:5(1)"color=yellow style=filled]
+
+13 [label = "13:16(1)"shape=diamond color=red style=filled]
+
+14 [label = "14:7(6)"color=violet style=filled]
+
+15 [label = "15:10(1)"shape=diamond color=red style=filled]
+
+16 [label = "16:13(1)"color=red style=filled]
+
+17 [label = "17:5(1)"color=violet style=filled]
+
+18 [label = "18:9(4)"color=yellow style=filled]
+
+19 [label = "19:1(2)"color=green style=filled]
+
+20 [label = "20:3(28)"color=violet style=filled]
+
+22 [label = "22:11(3)"color=violet style=filled]
+
+23 [label = "23:3(1)"color=green style=filled]
+
+24 [label = "24:2(2)"color=yellow style=filled]
+
+25 [label = "25:11(1)"shape=diamond color=violet style=filled]
+
+26 [label = "26:3(1)"color=yellow style=filled]
+
+
+27 -> 1
+27 -> 13
+27 -> 15
+27 -> 25
+27 -> 10
+
+1 -> 9
+1 -> 26
+
+2 -> 21
+
+3 -> 2
+
+4 -> 21
+
+5 -> 21
+
+6 -> 21
+
+7 -> 21
+
+8 -> 5
+8 -> 7
+
+9 -> 3
+9 -> 24
+
+10 -> 16
+10 -> 22
+
+11 -> 2
+
+12 -> 24
+
+13 -> 4
+13 -> 6
+13 -> 12
+13 -> 14
+13 -> 19
+13 -> 26
+
+14 -> 9
+14 -> 20
+
+15 -> 23
+15 -> 24
+15 -> 26
+
+16 -> 9
+16 -> 19
+16 -> 23
+
+17 -> 2
+17 -> 4
+
+18 -> 11
+18 -> 24
+
+19 -> 21
+
+20 -> 8
+20 -> 24
+
+
+22 -> 14
+22 -> 17
+
+23 -> 6
+
+24 -> 2
+24 -> 5
+
+25 -> 9
+25 -> 17
+25 -> 18
+
+26 -> 3
+
+}
