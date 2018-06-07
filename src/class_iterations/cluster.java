@@ -12,12 +12,25 @@ public class cluster {
 	private List<cluster> connections;
 	private Set<String> data_types;
 	private HashSet<String> files;
-
+	private boolean isSource; 
+	
 	cluster(int _id, Set<String> _data, HashSet<String> file_list) {
 		cluster_name = _id;
 		connections = new ArrayList<cluster>(); 
 		data_types = _data;
 		files = file_list;
+		isSource = false; 
+	}
+	
+	public boolean get_source()
+	{
+		
+		return this.isSource; 
+	}
+	
+	public void set_source(boolean _isSource)
+	{
+		this.isSource = _isSource; 
 	}
 
 	public int get_cluster_id() {

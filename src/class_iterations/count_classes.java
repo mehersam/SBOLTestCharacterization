@@ -11,7 +11,9 @@ import java.util.HashSet;
 import java.util.Random;
 import java.util.Set;
 
+import org.sbolstandard.core2.Activity;
 import org.sbolstandard.core2.Annotation;
+import org.sbolstandard.core2.Association;
 import org.sbolstandard.core2.Collection;
 import org.sbolstandard.core2.Component;
 import org.sbolstandard.core2.ComponentDefinition;
@@ -39,9 +41,14 @@ public class count_classes {
 	private static final String NEW_LINE_SEPARATOR = "\n";
 	private static String file_header = "";
 	private static final String file_name = "count_classes.csv";
+	private static final String classStatsFName = "class_stats.csv";
+
 	private static FileWriter fileWriter = null;
+	private static FileWriter classStatsWriter = null; 
 	// map class to number of times it appears in each file
 	private static HashMap<String, Integer> class_counts = new HashMap<String, Integer>();
+	private static HashMap<String, Integer> final_class_counts = new HashMap<String, Integer>();
+
 	private static HashMap<String, HashMap<String, Integer>> class_counts_2d = null;
 	private static Set<String> list_of_files = new HashSet<String>();
 	private static Set<HashSet<String>> clusters = new HashSet<HashSet<String>>(); 
@@ -53,23 +60,46 @@ public class count_classes {
 		fileWriter = new FileWriter(file_name);
 		fileWriter.append(COMMA_DELIMITER);
 		file_header = "";
-		for (String data_type : class_counts.keySet())
+		
+		classStatsWriter = new FileWriter(classStatsFName);
+		//classStatsWriter.append(COMMA_DELIMITER);
+		initialize_final_classes();
+		
+		String class_header = "";
+		for (String data_type : class_counts.keySet()) {
 			file_header += data_type + ",";
-
+		}
+				
 		fileWriter.append(file_header.toString());
 		class_counts_2d = new HashMap<String, HashMap<String, Integer>>();
 		// for each file in the examples folder, call count_classes_test
-		for (File f : new File("./SBOL2/").listFiles()) {
+		for (File f : new File("./SBOLTestSuite/SBOL2/").listFiles()) {
 			initialize_classes(); // resets the data types' count to 0
 			count_classes_test(f); // counts instances of each data type
-			class_counts_2d.put(f.getName(), class_counts); // associates file
-															// with the counts
-															// of each type
+			// associates file with the counts of each type
+			class_counts_2d.put(f.getName(), class_counts); 
+			
+			for(String key : class_counts.keySet())
+			{
+				int fcc = final_class_counts.get(key);
+				int cc = class_counts.get(key);
+				final_class_counts.put(key, fcc + cc);
+			}
 			list_of_files.add(f.getName()); // list of total files
+		
+		}
+		for(String data_type : final_class_counts.keySet())
+		{
+			String percentAppears = "=" + final_class_counts.get(data_type) + "/" + list_of_files.size();
+			class_header = data_type + "," + final_class_counts.get(data_type) + "," + percentAppears + "\n";
+			classStatsWriter.append(class_header.toString());
+			class_header = ""; 
 		}
 		try {
 			fileWriter.flush();
 			fileWriter.close();
+			classStatsWriter.flush();
+			classStatsWriter.close();
 		} catch (Exception e) {
 			System.out.println("Attempted to flush and close writer");
 			e.printStackTrace();
@@ -170,6 +200,7 @@ public class count_classes {
 			}
 
 		}
+		set_source(_nodes);
 		draw_graph(_nodes);
 		data(_nodes);
 	}
@@ -208,7 +239,7 @@ public class count_classes {
 	private static void draw_graph(ArrayList<cluster> _nodes) throws IOException {
 		System.out.println("number of nodes: " + _nodes.size());
 		data(_nodes);
-		File f = new File("redo.dot");
+		File f = new File("graph.dot");
 		File data = new File("class_relation_data.txt");
 
 		if (!f.exists() || !data.exists()) {
@@ -245,7 +276,11 @@ public class count_classes {
 		// go through each relation
 		for (cluster c : _nodes) {
 			for (cluster conn : c.get_connections()) {
-				// Check if conn.data_types.size > 0; otherwise don't print
+				//connect source nodes to root
+				if(c.get_source())
+					bw.write((_nodes.size() + 1) + " -> " + conn.get_cluster_id() + "\n");
+				
+				//set connection relations
 				bw.write(c.get_cluster_id() + " -> " + conn.get_cluster_id() + "\n");
 			}
 			bw.write("\n");
@@ -256,6 +291,7 @@ public class count_classes {
 		for (cluster c : _nodes) {
 			bw_data.write(c.get_cluster_id() + "");
 			bw_data.write("\n");
+			bw_data.write("Source? : " + c.get_source() + "\n");
 			bw_data.write("File count: " + c.get_files().size() + "\n");
 			bw_data.write("Files: ");
 			for (String file : c.get_files())
@@ -275,16 +311,25 @@ public class count_classes {
 		bw_data.close();
 	}
 
-	private static boolean is_source(ArrayList<cluster> _nodes, cluster c) {
-
-		boolean source_flag = true;
+	private static void set_source(ArrayList<cluster> _nodes) {
 		for (cluster node : _nodes)
-			for (cluster conn : node.get_connections())
-				if (conn.equals(c))
-					source_flag = false;
-
-		return source_flag;
-
+		{
+			node.set_source(true);
+			for (cluster conn : _nodes)
+			{
+				if(!node.equals(conn))
+				{
+					for(cluster c : conn.get_connections())
+					{
+						if(c.equals(node))
+						{
+							node.set_source(false);
+						}
+					}
+			
+				}
+			}
+		}
 	}
 
 	private static void data(ArrayList<cluster> _nodes) {
@@ -327,7 +372,28 @@ public class count_classes {
 		class_counts.put("ModuleDefinition", doc.getModuleDefinitions().size());
 		class_counts.put("Sequence", doc.getSequences().size());
 		class_counts.put("GenericTopLevel", doc.getGenericTopLevels().size());
+		class_counts.put("Attachment", doc.getAttachments().size());
+		class_counts.put("CombinatorialDerivation", doc.getCombinatorialDerivations().size());
+		class_counts.put("Implementation", doc.getImplementations().size());
+		class_counts.put("Activity", doc.getActivities().size());
+		
+	
+		for(Activity act : doc.getActivities())
+		{
+			class_counts.put("Association", act.getAssociations().size());
+			class_counts.put("Usage", act.getUsages().size());
+			
+			for(Association assoc : act.getAssociations())
+			{
+				if(assoc.getPlan() != null)
+					class_counts.put("Plan", class_counts.get("Plan") + 1);
+				if(assoc.getAgent() != null)
+					class_counts.put("Agent", class_counts.get("Agent") + 1);
 
+			}
+		}
+		
+	
 		for (TopLevel TL : doc.getTopLevels()) {
 			class_counts.put("Annotation", class_counts.get("Annotation") + TL.getAnnotations().size());
 //			for (Annotation a : TL.getAnnotations())
@@ -424,7 +490,10 @@ public class count_classes {
 
 			}
 		}
+		
+	
 		// GenericTopLevel's have nothing but annotations
+		
 		create_spreadsheet(file.getName());
 
 	}
@@ -460,6 +529,7 @@ public class count_classes {
 				fileWriter.append(class_counts.get(data_type).toString());
 				fileWriter.append(COMMA_DELIMITER);
 			}
+		
 
 		} catch (Exception e) {
 			System.out.println("Error when writing file data" + filename);
@@ -467,71 +537,14 @@ public class count_classes {
 		}
 	}
 
-	private static String abbreviations(String word) {
-		switch (word) {
-		case "Annotation":
-			return "Ann";
-		case "Boolean_Annotation":
-			return "BAnn";
-		case "Integer_Annotation":
-			return "IAnn";
-		case "String_Annotation":
-			return "SAnn";
-		case "Nested_Annotation":
-			return "NAnn";
-		case "Double_Annotation":
-			return "DAnn";
-		case "URI_Annotation":
-			return "UAnn";
-		case "Collection":
-			return "Col";
-		case "Component":
-			return "Comp";
-		case "ComponentDefinition":
-			return "CD";
-		case "FunctionalComponent":
-			return "FC";
-		case "GenericLocation":
-			return "GL";
-		case "GenericTopLevel":
-			return "GTL";
-		case "Interaction":
-			return "I";
-		case "Location":
-			return "L";
-		case "MapsTo":
-			return "MapsTo";
-		case "FC-MapsTo":
-			return "FCMaps";
-		case "Module-MapsTo":
-			return "ModMaps";
-		case "Model":
-			return "Mdl";
-		case "Module":
-			return "Mod";
-		case "ModuleDefinition":
-			return "MD";
-		case "Participation":
-			return "P";
-		case "Range":
-			return "R";
-		case "Sequence":
-			return "S";
-		case "SequenceAnnotation":
-			return "SA";
-		case "SequenceConstraint":
-			return "SC";
-		// case "TopLevel" : return "TL";
-		default:
-			return word;
-		}
-
-	}
-
 	private static void initialize_classes() {
 		class_counts = new HashMap<String, Integer>();
-
+		
+		class_counts.put("Activity", 0);
+		class_counts.put("Agent", 0);
 		class_counts.put("Annotation", 0);
+		class_counts.put("Association", 0);
+		class_counts.put("Attachment", 0);
 //		class_counts.put("Boolean_Annotation", 0);
 //		class_counts.put("Integer_Annotation", 0);
 //		class_counts.put("String_Annotation", 0);
@@ -539,12 +552,14 @@ public class count_classes {
 //		class_counts.put("Double_Annotation", 0);
 //		class_counts.put("URI_Annotation", 0);
 		class_counts.put("Collection", 0);
+		class_counts.put("CombinatorialDerivation", 0);
 		class_counts.put("Component", 0);
 		class_counts.put("ComponentDefinition", 0);
 		class_counts.put("Cut", 0);
 		class_counts.put("FunctionalComponent", 0);
 		class_counts.put("GenericLocation", 0);
 		class_counts.put("GenericTopLevel", 0);
+		class_counts.put("Implementation", 0);
 		class_counts.put("Interaction", 0);
 //		class_counts.put("Location", 0);
 		class_counts.put("MapsTo", 0);
@@ -555,12 +570,57 @@ public class count_classes {
 		class_counts.put("Module", 0);
 		class_counts.put("ModuleDefinition", 0);
 		class_counts.put("Participation", 0);
+		class_counts.put("Plan", 0);
 		class_counts.put("Range", 0);
 		class_counts.put("Sequence", 0);
 		class_counts.put("SequenceAnnotation", 0);
 		class_counts.put("SequenceConstraint", 0);
+		class_counts.put("Usage", 0);
 		// class_counts.put("TopLevel", 0);
 		keys.addAll(class_counts.keySet());
+
+	}
+	
+	private static void initialize_final_classes() {
+		final_class_counts = new HashMap<String, Integer>();
+		
+		final_class_counts.put("Activity", 0);
+		final_class_counts.put("Agent", 0);
+		final_class_counts.put("Annotation", 0);
+		final_class_counts.put("Association", 0);
+		final_class_counts.put("Attachment", 0);
+//		final_class_counts.put("Boolean_Annotation", 0);
+//		final_class_counts.put("Integer_Annotation", 0);
+//		final_class_counts.put("String_Annotation", 0);
+//		final_class_counts.put("Nested_Annotation", 0);
+//		final_class_counts.put("Double_Annotation", 0);
+//		final_class_counts.put("URI_Annotation", 0);
+		final_class_counts.put("Collection", 0);
+		final_class_counts.put("CombinatorialDerivation", 0);
+		final_class_counts.put("Component", 0);
+		final_class_counts.put("ComponentDefinition", 0);
+		final_class_counts.put("Cut", 0);
+		final_class_counts.put("FunctionalComponent", 0);
+		final_class_counts.put("GenericLocation", 0);
+		final_class_counts.put("GenericTopLevel", 0);
+		final_class_counts.put("Implementation", 0);
+		final_class_counts.put("Interaction", 0);
+//		final_class_counts.put("Location", 0);
+		final_class_counts.put("MapsTo", 0);
+//		final_class_counts.put("Component-MapsTo", 0);
+//		final_class_counts.put("FC-MapsTo", 0);
+//		final_class_counts.put("Module-MapsTo", 0);
+		final_class_counts.put("Model", 0);
+		final_class_counts.put("Module", 0);
+		final_class_counts.put("ModuleDefinition", 0);
+		final_class_counts.put("Participation", 0);
+		final_class_counts.put("Plan", 0);
+		final_class_counts.put("Range", 0);
+		final_class_counts.put("Sequence", 0);
+		final_class_counts.put("SequenceAnnotation", 0);
+		final_class_counts.put("SequenceConstraint", 0);
+		final_class_counts.put("Usage", 0);
+		// final_class_counts.put("TopLevel", 0);
 
 	}
 
