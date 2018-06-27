@@ -166,8 +166,17 @@ public class cluster_analysis {
 				for (cluster child : parent.get_connections()) {
 					child_dtypes.addAll(child.get_data_types());
 				}
-
-				if (parent.get_data_types().equals(child_dtypes)) {
+				if(child_dtypes.size() == 0)
+				{
+					bw.write("\n" + parent.get_cluster_id() + "\n");
+					bw.write("children have no data types: Complete Set\n");
+				}
+				else if(isLeaf(parent))
+				{
+					bw.write("\n" + parent.get_cluster_id() + "\n");
+					bw.write("Leaf Node: Complete Set\n");
+				}
+				else if (parent.get_data_types().equals(child_dtypes)) {
 
 					bw.write("\n" + parent.get_cluster_id() + "\n");
 					bw.write("Children exist in Parent: Complete Set\n");
@@ -203,6 +212,38 @@ public class cluster_analysis {
 		fw.close();
 	}
 
+	private static boolean isLeaf(cluster c)
+	{
+		if(c.get_data_types().size() == 1)
+		{
+			for(String dataType : c.get_data_types())
+			{
+				if(dataType.equals("Collection"))
+					return true; 
+				if(dataType.equals("ModuleDefinition"))
+					return true; 
+				if(dataType.equals("ComponentDefinition"))
+					return true;
+				if(dataType.equals("Sequence"))
+					return true;
+				if(dataType.equals("Model"))
+					return true;
+				if(dataType.equals("GenericTopLevel"))
+					return true;
+				if(dataType.equals("Attachment"))
+					return true;
+				if(dataType.equals("Implementation"))
+					return true;
+				if(dataType.equals("CombinatorialDerivation"))
+					return true;
+				if(dataType.equals("Activity"))
+					return true;
+		
+			}
+		}
+		
+		return false; 
+	}
 	private static void required_type_pairs() {
 		pairs = new HashMap<String, HashSet<String>>();
 

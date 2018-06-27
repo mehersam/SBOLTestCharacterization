@@ -64,13 +64,13 @@ public class count_classes {
 	public static void main(String[] args)
 			throws SBOLValidationException, IOException, SBOLConversionException, URISyntaxException {
 		initialize_classes();
-		//class_property_coverage();
+		class_property_coverage();
 		fileWriter = new FileWriter(file_name);
 		fileWriter.append(COMMA_DELIMITER);
 		file_header = "";
 
 		classStatsWriter = new FileWriter(classStatsFName);
-		// classStatsWriter.append(COMMA_DELIMITER);
+		//classStatsWriter.append(COMMA_DELIMITER);
 		initialize_final_classes();
 
 		String class_header = "";

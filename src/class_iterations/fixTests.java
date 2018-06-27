@@ -15,6 +15,7 @@ import org.sbolstandard.core2.SBOLDocument;
 import org.sbolstandard.core2.SBOLReader;
 import org.sbolstandard.core2.SBOLValidationException;
 import org.sbolstandard.core2.SBOLWriter;
+import org.sbolstandard.core2.Sequence;
 import org.sbolstandard.core2.SequenceAnnotation;
 
 public class fixTests {
@@ -52,6 +53,11 @@ public class fixTests {
 
 		for(Activity a : doc.getActivities())
 			System.out.println(a.getAssociations().size());
+		//doc = setup(); 
+		//doc.createActivity("Activity_Example"); 
+		
+		
+		
 	}
 	
 	public static SBOLDocument setup()
