@@ -7,9 +7,13 @@ import java.net.URISyntaxException;
 import org.sbolstandard.core2.AccessType;
 import org.sbolstandard.core2.Activity;
 import org.sbolstandard.core2.Agent;
+import org.sbolstandard.core2.Annotation;
+import org.sbolstandard.core2.Association;
 import org.sbolstandard.core2.ComponentDefinition;
+import org.sbolstandard.core2.DirectionType;
 import org.sbolstandard.core2.EDAMOntology;
 import org.sbolstandard.core2.OrientationType;
+import org.sbolstandard.core2.Plan;
 import org.sbolstandard.core2.SBOLConversionException;
 import org.sbolstandard.core2.SBOLDocument;
 import org.sbolstandard.core2.SBOLReader;
@@ -24,7 +28,7 @@ public class fixTests {
 		// TODO Auto-generated method stub
 		
 		SBOLDocument doc = setup();
-		doc = SBOLReader.read("./SBOLTestSuite/SBOL2/ComponentDefinitionOutput.xml");
+		/*doc = SBOLReader.read("./SBOLTestSuite/SBOL2/ComponentDefinitionOutput.xml");
 		
 		URI dna = new URI("http://www.biopax.org/release/biopax-level3.owl#DnaRegion");
 		ComponentDefinition gl_cd = doc.createComponentDefinition("GenericLocationComponent", ComponentDefinition.DNA); 
@@ -53,11 +57,24 @@ public class fixTests {
 
 		for(Activity a : doc.getActivities())
 			System.out.println(a.getAssociations().size());
-		//doc = setup(); 
-		//doc.createActivity("Activity_Example"); 
 		
-		
-		
+		doc = setup(); 
+		doc = SBOLReader.read("./SBOLTestSuite/SBOL2/design-build-test-learn2.xml");
+		Plan p = doc.createPlan("gibson_assembly");
+		for(Activity a : doc.getActivities())
+		{
+			for(Association assoc : a.getAssociations())
+			{
+				assoc.setPlan(p.getIdentity());
+			}
+		}
+		doc.write("./SBOLTestSuite/SBOL2/design-build-test-learn2.xml");
+		*/
+		doc = setup();
+		//doc = SBOLReader.read("./SBOLTestSuite/SBOL2/design-build-test-learn_plan.xml");
+		Plan p = doc.createPlan("gibson_assembly_plan");
+		doc.write("./SBOLTestSuite/SBOL2/design-build-test-learn_plan.xml");
+		//doc.createComponentDefinition("", new URI("")).createSequenceConstraint(displayId, restriction, subjectId, objectId)
 	}
 	
 	public static SBOLDocument setup()
