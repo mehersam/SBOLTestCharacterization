@@ -1,4 +1,4 @@
-package class_iterations;
+package org.sboltestcharacterization;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -46,30 +46,30 @@ public class cluster_coverage {
 		HashSet<String> types = cluster_types(clusters);
 		SBOL2_coverage_stats(types);
 		//
-		//// for(HashSet<String> c : combos)
-		//// {
-		//// for(String s : c)
-		//// System.out.print(s + ",");
-		//// System.out.print("\n");
-		//// }
-		////
-		// int count = 0;
-		// for(HashSet<String> combo : combos)
+		// for(HashSet<String> c : combos)
 		// {
-		// if(!clusters.contains(combo))
-		// {
-		// for(String s : combo)
+		// for(String s : c)
 		// System.out.print(s + ",");
-		// System.out.println("\n");
-		// count++;
-		// }
+		// System.out.print("\n");
 		// }
 		//
-		// System.out.println("Total combos: " + combos.size());
-		// System.out.println("Total clusters: " + clusters.size());
-		// System.out.println("Current Coverage: " + count);
-		// System.out.println("Uncovered combos: " + (float)count/combos.size());
-		//
+		 int count = 0;
+		 for(HashSet<String> combo : combos)
+		 {
+		 if(!clusters.contains(combo))
+		 {
+		 for(String s : combo)
+		 System.out.print(s + ",");
+		 System.out.println("\n");
+		 count++;
+		 }
+		 }
+		
+		 System.out.println("Total combos: " + combos.size());
+		 System.out.println("Total clusters: " + clusters.size());
+		 System.out.println("Current Coverage: " + count);
+		 System.out.println("Uncovered combos: " + (float)count/combos.size());
+		
 		scan_clusters.close();
 		scan_combos.close();
 
@@ -185,8 +185,11 @@ public class cluster_coverage {
 				functionalClusters++;
 
 			// auxiliary classes only
-			if ((cluster.contains("Collection") || cluster.contains("GenericTopLevel"))
+			if ((cluster.contains("Collection") || cluster.contains("GenericTopLevel")
+					|| cluster.contains("Activity") || cluster.contains("Attachment")
+					|| cluster.contains("Plan") || cluster.contains("Agent"))
 					&& (!cluster.contains("Sequence") && !cluster.contains("ComponentDefinition")
+							&& !cluster.contains("Implementation") && !cluster.contains("CombinatorialDerivation")
 							&& !cluster.contains("ModuleDefinition") && !cluster.contains("Model"))) {
 				auxillaryClusters++;
 			}

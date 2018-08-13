@@ -1,4 +1,4 @@
-package class_iterations;
+package org.sboltestcharacterization;
 
 import java.io.BufferedWriter;
 import java.io.File;
@@ -85,8 +85,8 @@ public class count_classes {
 		// for each file in the examples folder, call count_classes_test
 		//./SBOLTestSuite/SBOL2/
 		//C:\\Users\\Meher\\Documents\\Masters_Program\\TestSuites\\SBOLTestSuite\\SBOL2
-		//
-		for (File f : new File("C:\\Users\\Meher\\Documents\\Masters_Program\\thesis\\SBOLTestCharacterization\\SBOLTestSuite\\SBOL2").listFiles()) {
+		//C:\\Users\\Meher\\Documents\\Masters_Program\\thesis\\SBOLTestCharacterization\\SBOLTestSuite\\SBOL2
+		for (File f : new File("../SBOLTestSuite/SBOL2").listFiles()) {
 			initialize_classes(); // resets the data types' count to 0
 			//class_property_coverage();
 			System.out.println("working on: " + f.getName());

@@ -1,4 +1,4 @@
-package class_iterations;
+package org.sboltestcharacterization;
 
 import java.util.ArrayList;
 import java.util.HashSet;

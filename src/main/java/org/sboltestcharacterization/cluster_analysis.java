@@ -1,4 +1,4 @@
-package class_iterations;
+package org.sboltestcharacterization;
 
 import java.io.BufferedWriter;
 import java.io.File;
@@ -43,26 +43,26 @@ public class cluster_analysis {
 							&& !data_types.contains("Plan") && !data_types.contains("Agent")))
 				return "salmon";
 
-			// aux & structural
-			if ((data_types.contains("Collection") || data_types.contains("GenericTopLevel")
-					|| data_types.contains("Activity") || data_types.contains("Attachment")
-					|| data_types.contains("Plan") || data_types.contains("Agent"))
-					&& (data_types.contains("Sequence") || data_types.contains("ComponentDefinition")
-							|| data_types.contains("Implementation") || data_types.contains("CombinatorialDerivation"))
-					&& (!data_types.contains("ModuleDefinition") && !data_types.contains("Model"))) {
-				return "blueviolet";
-			}
-
-			// aux & functional
-			if ((data_types.contains("Collection") || data_types.contains("GenericTopLevel")
-					|| data_types.contains("Activity") || data_types.contains("Attachment")
-					|| data_types.contains("Plan") || data_types.contains("Agent"))
-					&& (!data_types.contains("Sequence") && !data_types.contains("ComponentDefinition")
-							&& !data_types.contains("Implementation")
-							&& !data_types.contains("CombinatorialDerivation"))
-					&& (data_types.contains("ModuleDefinition") || data_types.contains("Model"))) {
-				return "dodgerblue";
-			}
+//			// aux & structural
+//			if ((data_types.contains("Collection") || data_types.contains("GenericTopLevel")
+//					|| data_types.contains("Activity") || data_types.contains("Attachment")
+//					|| data_types.contains("Plan") || data_types.contains("Agent"))
+//					&& (data_types.contains("Sequence") || data_types.contains("ComponentDefinition")
+//							|| data_types.contains("Implementation") || data_types.contains("CombinatorialDerivation"))
+//					&& (!data_types.contains("ModuleDefinition") && !data_types.contains("Model"))) {
+//				return "blueviolet";
+//			}
+//
+//			// aux & functional
+//			if ((data_types.contains("Collection") || data_types.contains("GenericTopLevel")
+//					|| data_types.contains("Activity") || data_types.contains("Attachment")
+//					|| data_types.contains("Plan") || data_types.contains("Agent"))
+//					&& (!data_types.contains("Sequence") && !data_types.contains("ComponentDefinition")
+//							&& !data_types.contains("Implementation")
+//							&& !data_types.contains("CombinatorialDerivation"))
+//					&& (data_types.contains("ModuleDefinition") || data_types.contains("Model"))) {
+//				return "dodgerblue";
+//			}
 			// structural
 			if ((!data_types.contains("ModuleDefinition") && !data_types.contains("Model"))
 					&& !data_types.contains("Collection") && !data_types.contains("GenericTopLevel")
@@ -88,24 +88,24 @@ public class cluster_analysis {
 				return "royalblue";
 			}
 
-			// all
-			if ((data_types.contains("Collection") || data_types.contains("GenericTopLevel")
-					|| data_types.contains("Activity") || data_types.contains("Attachment")
-					|| data_types.contains("Plan") || data_types.contains("Agent"))
-					&& (data_types.contains("Sequence") || data_types.contains("ComponentDefinition")
-							|| data_types.contains("Implementation") || data_types.contains("CombinatorialDerivation")
-							|| data_types.contains("ModuleDefinition") || data_types.contains("Model"))) {
-				return "mediumseagreen";
-			}
-			// none
-			if ((!data_types.contains("Collection") && !data_types.contains("GenericTopLevel")
-					&& !data_types.contains("Activity") && !data_types.contains("Attachment")
-					&& !data_types.contains("Plan") && !data_types.contains("Agent"))
-					&& !data_types.contains("Sequence") && !data_types.contains("ComponentDefinition")
-					&& !data_types.contains("Implementation") && !data_types.contains("CombinatorialDerivation")
-					&& !data_types.contains("ModuleDefinition") && !data_types.contains("Model")) {
-				return "slategrey";
-			}
+//			// all
+//			if ((data_types.contains("Collection") || data_types.contains("GenericTopLevel")
+//					|| data_types.contains("Activity") || data_types.contains("Attachment")
+//					|| data_types.contains("Plan") || data_types.contains("Agent"))
+//					&& (data_types.contains("Sequence") || data_types.contains("ComponentDefinition")
+//							|| data_types.contains("Implementation") || data_types.contains("CombinatorialDerivation")
+//							|| data_types.contains("ModuleDefinition") || data_types.contains("Model"))) {
+//				return "mediumseagreen";
+//			}
+//			// none
+//			if ((!data_types.contains("Collection") && !data_types.contains("GenericTopLevel")
+//					&& !data_types.contains("Activity") && !data_types.contains("Attachment")
+//					&& !data_types.contains("Plan") && !data_types.contains("Agent"))
+//					&& !data_types.contains("Sequence") && !data_types.contains("ComponentDefinition")
+//					&& !data_types.contains("Implementation") && !data_types.contains("CombinatorialDerivation")
+//					&& !data_types.contains("ModuleDefinition") && !data_types.contains("Model")) {
+//				return "slategrey";
+//			}
 		}
 
 		return "violet";// "violet";
